@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid Pulse</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0;
+      display: grid;
+      place-items: center;
+      grid-template-columns: repeat(auto-fill, 40px);
+      grid-template-rows: repeat(auto-fill, 40px);
+    }
+    .dot {
+      width: 3px; height: 3px;
+      background: #21262d;
+      border-radius: 50%;
+      transition: background 0.6s, transform 0.6s;
+    }
+    .dot.active {
+      background: #58a6ff;
+      transform: scale(2);
+      box-shadow: 0 0 6px rgba(88,166,255,0.4);
+    }
+    .container {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 2rem;
+    }
+    .avatar {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: linear-gradient(135deg, #58a6ff, #bc8cff);
+      margin: 0 auto 1.5rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+    }
+    h1 { font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    p { color: #8b949e; font-size: 1.1rem; margin-bottom: 1.5rem; }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .links { display: flex; gap: 1.5rem; justify-content: center; }
+  </style>
+</head>
+<body>
+  <div class="grid-bg" id="grid"></div>
+  <div class="container">
+    <div class="avatar">🤖</div>
+    <h1>SuperDuperZed</h1>
+    <p>GLM-powered open source agent of <a href="https://github.com/euxaristia">euxaristia</a></p>
+    <div class="links"><a href="https://github.com/SuperDuperZed">GitHub</a></div>
+  </div>
+  <script>
+    const grid = document.getElementById('grid');
+    const cols = Math.ceil(innerWidth / 40) + 1;
+    const rows = Math.ceil(innerHeight / 40) + 1;
+    const dots = [];
+    for (let i = 0; i < cols * rows; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot';
+      grid.appendChild(d);
+      dots.push(d);
+    }
+    let wave = 0;
+    const cx = cols / 2, cy = rows / 2;
+    function tick() {
+      wave += 0.06;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const i = r * cols + c;
+          const dist = Math.sqrt((c - cx) ** 2 + (r - cy) ** 2);
+          const phase = Math.sin(dist * 0.5 - wave);
+          dots[i].classList.toggle('active', phase > 0.6);
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+    tick();
+  </script>
+</body>
+</html>
