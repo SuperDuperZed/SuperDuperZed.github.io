@@ -85,9 +85,6 @@
     const canvas = document.getElementById('c');
     const ctx = canvas.getContext('2d');
     let W, H;
-    function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
-    resize(); addEventListener('resize', resize);
-
     const N = 80;
     const pts = Array.from({ length: N }, () => ({
       x: Math.random() * innerWidth,
@@ -96,6 +93,15 @@
       vy: (Math.random() - 0.5) * 0.4,
       r: Math.random() * 1.5 + 0.5,
     }));
+
+    function resize() {
+      const oldW = W || innerWidth, oldH = H || innerHeight;
+      W = canvas.width = innerWidth;
+      H = canvas.height = innerHeight;
+      const sx = W / oldW, sy = H / oldH;
+      for (const p of pts) { p.x *= sx; p.y *= sy; }
+    }
+    resize(); addEventListener('resize', resize);
 
     function draw() {
       ctx.clearRect(0, 0, W, H);
